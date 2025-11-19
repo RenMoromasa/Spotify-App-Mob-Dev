@@ -14,9 +14,12 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native"; // <-- ADDED IMPORT
+
 const { width } = Dimensions.get('window');
-const CARD_SIZE = width * 0.09;   // songs
-const ALBUM_SIZE = width * 0.90; // albums (smaller)
+const CARD_SIZE = width * 0.4; // Corrected to use 0.4 for song card width
+const ARTIST_SIZE = 100; // Assuming this size
+const ALBUM_SIZE = width * 0.6; // Corrected to use 0.6 for album card width
 
 
 const TRENDING_SONGS = [
@@ -37,6 +40,7 @@ const ALBUMS = [
 ];
 
 export default function SpotifyHome() {
+  const navigation = useNavigation(); // <-- ADDED HOOK
   const [query, setQuery] = useState('');
   const pulse = useRef(new Animated.Value(1)).current;
 
@@ -48,25 +52,46 @@ export default function SpotifyHome() {
   };
 
   const renderSong = ({ item }) => (
-    <View style={styles.songCard}>
-      <Image source={{ uri: item.image }} style={styles.songImage} />
+    <TouchableOpacity // <-- CHANGED TO TouchableOpacity
+      style={[styles.songCard, { width: CARD_SIZE }]} // Ensure dynamic size is used
+      onPress={() => {
+        console.log(`Tapped song: ${item.title}`);
+        // Navigate to a details screen, passing the song data
+        navigation.navigate('SongDetails', { songId: item.id, title: item.title }); 
+      }} 
+    > 
+      <Image source={{ uri: item.image }} style={[styles.songImage, { height: CARD_SIZE }]} />
       <Text style={styles.songTitle} numberOfLines={1}>{item.title}</Text>
       <Text style={styles.songArtist} numberOfLines={1}>{item.artist}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderArtist = ({ item }) => (
-    <View style={styles.artistCard}>
+    <TouchableOpacity // <-- CHANGED TO TouchableOpacity
+      style={[styles.artistCard, { width: ARTIST_SIZE }]} // Ensure dynamic size is used
+      onPress={() => {
+        console.log(`Tapped artist: ${item.name}`);
+        // Navigate to an artist details screen
+        navigation.navigate('ArtistDetails', { artistId: item.id, name: item.name });
+      }}
+    >
       <Image source={{ uri: item.image }} style={styles.artistImage} />
       <Text style={styles.artistName} numberOfLines={1}>{item.name}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderAlbum = ({ item }) => (
-    <View style={styles.albumCard}>
-      <Image source={{ uri: item.image }} style={styles.albumImage} />
+    <TouchableOpacity // <-- CHANGED TO TouchableOpacity
+      style={[styles.albumCard, { width: ALBUM_SIZE }]} // Ensure dynamic size is used
+      onPress={() => {
+        console.log(`Tapped album: ${item.title}`);
+        // Navigate to a playlist/album details screen
+        navigation.navigate('AlbumDetails', { albumId: item.id, title: item.title });
+      }}
+    >
+      <Image source={{ uri: item.image }} style={[styles.albumImage, { height: ALBUM_SIZE }]} />
       <Text style={styles.albumTitle} numberOfLines={1}>{item.title}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -77,7 +102,9 @@ export default function SpotifyHome() {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.h1}>Good evening</Text>
-          <TouchableOpacity>
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('Profile')} // Added navigation to profile
+          >
             <Ionicons name="person-circle" size={40} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -151,17 +178,16 @@ const styles = StyleSheet.create({
   sectionTitle: { color: '#fff', fontSize: 20, fontWeight: '700' },
   showAll: { color: '#b3b3b3', fontSize: 13 },
 
-  songCard: { width: CARD_SIZE, marginRight: 14 },
-  songImage: { width: '100%', height: CARD_SIZE, borderRadius: 6 },
+  songCard: { marginRight: 14 }, // Reverted width to be set dynamically in render function
+  songImage: { width: '100%', borderRadius: 6 }, // Reverted height to be set dynamically in render function
   songTitle: { color: '#fff', marginTop: 6, fontWeight: '400' },
   songArtist: { color: '#b3b3b3', fontSize: 12 },
 
-  artistCard: { width: 40, marginRight: 14, alignItems: 'center' },
+  artistCard: { marginRight: 14, alignItems: 'center' }, // Reverted width to be set dynamically in render function
   artistImage: { width: 90, height: 90, borderRadius: 45, marginBottom: 6 },
   artistName: { color: '#fff', fontSize: 13, textAlign: 'center' },
 
-albumCard: { width: ALBUM_SIZE, marginRight: 14 },
-albumImage: { width: '100%', height: ALBUM_SIZE, borderRadius: 6 },
-albumTitle: { color: '#fff', marginTop: 6, fontWeight: '600', fontSize: 13 },
-
+  albumCard: { marginRight: 14 }, // Reverted width to be set dynamically in render function
+  albumImage: { width: '100%', borderRadius: 6 }, // Reverted height to be set dynamically in render function
+  albumTitle: { color: '#fff', marginTop: 6, fontWeight: '600', fontSize: 13 },
 });
