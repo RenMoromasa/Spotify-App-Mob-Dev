@@ -6,6 +6,6 @@ export default function Index() {
   if (isLoggedIn) {
     return <Redirect href="/(drawer)/home" />;
   } else {
-    return <Redirect href="/(auth)/login" />;
+    return <Redirect href="/(tabs)/SpotifyLogin" />;
   }
 }

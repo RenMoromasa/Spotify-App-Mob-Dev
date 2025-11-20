@@ -2,7 +2,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SpotifyLogin from "./SpotifyLogin"; 
-import HomeScreen from "./PlaylistScreen";
+import HomeScreen from "./PlaylistsScreen";
 import SignupScreen from "./SpotifySignup";
 
 const Stack = createNativeStackNavigator();

@@ -14,8 +14,17 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFonts } from "expo-font";
 import { BlurView } from "expo-blur";
+// 🚨 Use router for navigating between groups
+import { router } from "expo-router"; 
 
-export default function SpotifyLogin() {
+// IMPORTANT: Hide the header
+export const options = {
+    headerShown: false,
+};
+
+export default function SpotifySignup() {
+  // --- STATE DEFINITIONS ---
+  // Inputs
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
@@ -24,13 +33,53 @@ export default function SpotifyLogin() {
   const [year, setYear] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [gender, setGender] = useState("");
-  const [focusedInput, setFocusedInput] = useState(null);
+  // UI/Logic States
+  const [focusedInput, setFocusedInput] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [fontsLoaded] = useFonts({
     SpotifyCircular: require("../../assets/fonts/CircularStd-Bold.ttf"),
   });
 
+  // Function to clear error when any input changes
+  const clearErrorOnChange = (setter) => (text) => {
+    setter(text);
+    setError('');
+  };
+
   if (!fontsLoaded) return null;
+
+  const handleSignUp = async () => {
+    setError("");
+
+    // --- 1. Basic Validation ---
+    if (!email.trim() || !fullName.trim() || !password.trim() || !day.trim() || !month.trim() || !year.trim() || !gender) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
+    // Basic length check for DOB (Using 2-digit format for MM/DD/YY based on previous corrections)
+    if (month.length !== 2 || day.length !== 2 || year.length !== 2) {
+        setError("Please ensure Date of Birth is entered correctly (MM/DD/YY).");
+        return;
+    }
+
+    // --- 2. Simulating API Call/Authentication ---
+    setIsLoading(true);
+    
+    try {
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        // If successful, navigate to the main app (drawer home)
+        router.push("/(drawer)/home"); 
+        
+    } catch (apiError) {
+        setError("Sign up failed. Please try again later.");
+    } finally {
+        setIsLoading(false);
+    }
+  };
+
 
   return (
     <KeyboardAvoidingView
@@ -44,10 +93,7 @@ export default function SpotifyLogin() {
         end={{ x: 0, y: 0 }}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={styles.container}
-          keyboardShouldPersistTaps="handled"
-        >
+        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <Image
             source={{
               uri: "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Full_Logo_RGB_Green.png",
@@ -62,17 +108,14 @@ export default function SpotifyLogin() {
           <BlurView
             intensity={50}
             tint="dark"
-            style={[
-              styles.glassContainer,
-              focusedInput === "email" && styles.glassContainerFocused,
-            ]}
+            style={[styles.glassContainer, focusedInput === "email" && styles.glassContainerFocused]}
           >
             <TextInput
               style={styles.input}
               placeholder="Email Address"
               placeholderTextColor="#aaa"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={clearErrorOnChange(setEmail)}
               keyboardType="email-address"
               autoCapitalize="none"
               onFocus={() => setFocusedInput("email")}
@@ -84,17 +127,14 @@ export default function SpotifyLogin() {
           <BlurView
             intensity={50}
             tint="dark"
-            style={[
-              styles.glassContainer,
-              focusedInput === "fullName" && styles.glassContainerFocused,
-            ]}
+            style={[styles.glassContainer, focusedInput === "fullName" && styles.glassContainerFocused]}
           >
             <TextInput
               style={styles.input}
               placeholder="Full Name"
               placeholderTextColor="#aaa"
               value={fullName}
-              onChangeText={setFullName}
+              onChangeText={clearErrorOnChange(setFullName)}
               onFocus={() => setFocusedInput("fullName")}
               onBlur={() => setFocusedInput(null)}
             />
@@ -104,10 +144,7 @@ export default function SpotifyLogin() {
           <BlurView
             intensity={50}
             tint="dark"
-            style={[
-              styles.glassContainer,
-              focusedInput === "password" && styles.glassContainerFocused,
-            ]}
+            style={[styles.glassContainer, focusedInput === "password" && styles.glassContainerFocused]}
           >
             <TextInput
               style={styles.input}
@@ -115,123 +152,104 @@ export default function SpotifyLogin() {
               placeholderTextColor="#aaa"
               secureTextEntry={!showPassword}
               value={password}
-              onChangeText={setPassword}
+              onChangeText={clearErrorOnChange(setPassword)}
               onFocus={() => setFocusedInput("password")}
               onBlur={() => setFocusedInput(null)}
             />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ paddingHorizontal: 10 }}>
               <Ionicons
                 name={showPassword ? "eye-off" : "eye"}
                 size={20}
                 color="#aaa"
-                style={{ paddingHorizontal: 10 }}
               />
             </TouchableOpacity>
           </BlurView>
 
-          {/* Date of Birth */}
-          <View style={styles.dobSectionInline}>
-  <Text style={styles.dobLabelInline}>Date of Birth:</Text>
-  <BlurView
-    intensity={50}
-    tint="dark"
-    style={[
-      styles.dobBoxInline,
-      focusedInput === "month" && styles.glassContainerFocused,
-    ]}
-  >
-    <TextInput
-      style={styles.input}
-      placeholder="MM"
-      placeholderTextColor="#aaa"
-      keyboardType="numeric"
-      maxLength={2}
-      value={month}
-      onChangeText={setMonth}
-      onFocus={() => setFocusedInput("month")}
-      onBlur={() => setFocusedInput(null)}
-    />
-  </BlurView>
-
-  <BlurView
-    intensity={50}
-    tint="dark"
-    style={[
-      styles.dobBoxInline,
-      focusedInput === "day" && styles.glassContainerFocused,
-    ]}
-  >
-    <TextInput
-      style={styles.input}
-      placeholder="DD"
-      placeholderTextColor="#aaa"
-      keyboardType="numeric"
-      maxLength={2}
-      value={day}
-      onChangeText={setDay}
-      onFocus={() => setFocusedInput("day")}
-      onBlur={() => setFocusedInput(null)}
-    />
-  </BlurView>
-
-  <BlurView
-    intensity={50}
-    tint="dark"
-    style={[
-      styles.dobBoxInline,
-      focusedInput === "year" && styles.glassContainerFocused,
-      styles.dobBoxLastInline,
-    ]}
-  >
-    <TextInput
-      style={styles.input}
-      placeholder="YYYY"
-      placeholderTextColor="#aaa"
-      keyboardType="numeric"
-      maxLength={4}
-      value={year}
-      onChangeText={setYear}
-      onFocus={() => setFocusedInput("year")}
-      onBlur={() => setFocusedInput(null)}
-    />
-  </BlurView>
-</View>
-
-
-          {/* Gender */}
-          <View style={styles.genderContainer}>
-            {["Male", "Female"].map((g) => (
-              <TouchableOpacity
-                key={g}
-                style={[
-                  styles.genderButton,
-                  gender === g && styles.genderButtonSelected,
-                ]}
-                onPress={() => setGender(g)}
-              >
-                <Text
+          {/* Date of Birth (Using the structure/style developed in previous steps) */}
+          <View style={[styles.inlineFieldWrapper, { marginBottom: 10 }]}>
+            <Text style={styles.inlineLabel}>Date Of Birth:</Text> 
+            <View style={styles.dobSectionInline}> 
+              {["MM", "DD", "YY"].map((placeholder, i) => (
+                <BlurView
+                  key={placeholder}
+                  intensity={50}
+                  tint="dark"
                   style={[
-                    styles.genderText,
-                    gender === g && styles.genderTextSelected,
+                    styles.dobBoxInline,
+                    styles.glassContainer,
+                    { width: '30%', marginBottom: 0 },
+                    focusedInput === placeholder.toLowerCase() && styles.glassContainerFocused,
+                    i !== 2 && { marginRight: 10 },
                   ]}
                 >
-                  {g}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                 <TextInput
+                    style={styles.dobInput}
+                    placeholder={placeholder}
+                    placeholderTextColor="#aaa"
+                    keyboardType="numeric"
+                    maxLength={2}
+                    value={placeholder === "MM" ? month : placeholder === "DD" ? day : year}
+                    onChangeText={
+                      placeholder === "MM" ? clearErrorOnChange(setMonth) : placeholder === "DD" ? clearErrorOnChange(setDay) : clearErrorOnChange(setYear)
+                    }
+                    onFocus={() => setFocusedInput(placeholder.toLowerCase())}
+                    onBlur={() => setFocusedInput(null)}
+                  />
+                </BlurView>
+              ))}
+            </View>
           </View>
 
-          {/* Sign Up Button */}
-          <LinearGradient
-            colors={["#0f5f29ff", "#1FB853"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.signInButton}
-          >
-            <Text style={styles.signInText}>Sign Up</Text>
-          </LinearGradient>
+          {/* Gender */}
+          <View style={styles.inlineFieldWrapper}>
+            <Text style={styles.inlineLabel}>Gender:</Text> 
+            <View style={styles.genderContainerInline}>
+              {["Male", "Female", "Other"].map((g) => ( // Added 'Other' for completeness
+                <TouchableOpacity
+                  key={g}
+                  style={[styles.genderButton, gender === g && styles.genderButtonSelected]}
+                  onPress={() => { setGender(g); setError(''); }}
+                >
+                  <Text
+                    style={[styles.genderText, gender === g && styles.genderTextSelected]}
+                  >
+                    {g}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+          
+          {/* 🚨 Error Display (Centered) */}
+          {error ? (
+            <Text style={styles.errorText}>
+              {error}
+            </Text>
+          ) : null}
 
-          {/* Socials */}
+          {/* Sign Up Button */}
+          <TouchableOpacity
+            style={[
+              styles.signUpButtonWrapper, // Using centralized sign-up button style
+              { 
+                marginTop: error ? 10 : 20,
+                opacity: isLoading ? 0.6 : 1,
+              }
+            ]}
+            onPress={handleSignUp}
+            disabled={isLoading}
+          >
+            <LinearGradient
+              colors={["#0f5f29ff", "#1FB853"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.signInButton}
+            >
+              <Text style={styles.signInText}>{isLoading ? 'Signing Up...' : 'Sign Up'}</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          {/* Social Sign In (from second code block) */}
           <Text style={styles.orText}>Or Continue Using</Text>
           <View style={styles.socials}>
             {["logo-google", "logo-facebook", "logo-apple"].map((icon) => (
@@ -246,10 +264,11 @@ export default function SpotifyLogin() {
             ))}
           </View>
 
-          {/* Already have account */}
+          {/* Already have an account */}
           <View style={styles.signinRow}>
             <Text style={{ color: "#aaa" }}>Already have an account? </Text>
-            <TouchableOpacity>
+            {/* 🚨 Navigation fixed to use router.push and correct path */}
+            <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
               <Text style={styles.signin}>Sign In</Text>
             </TouchableOpacity>
           </View>
@@ -259,108 +278,105 @@ export default function SpotifyLogin() {
   );
 }
 
+// --- STATIC STYLES ---
+
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
+  container: { flexGrow: 1, alignItems: "center", justifyContent: "center", padding: 20 },
   logoImage: { width: 250, height: 90, marginBottom: 20 },
-  title: {
-    color: "white",
-    fontSize: 40,
-    marginBottom: 60,
-    textAlign: "center",
-    fontFamily: "SpotifyCircular",
-  },
-  input: {
-    color: "white",
-    fontSize: 16,
-    fontFamily: "SpotifyCircular",
-    height: "100%",
-    backgroundColor: "transparent",
-    flex: 1,
+  title: { color: "white", fontSize: 40, marginBottom: 40, textAlign: "center", fontFamily: "SpotifyCircular" }, // Using size 40/margin 40 for better spacing
+
+  // ** Input/Glass Styles (Unified) **
+  input: { 
+    color: "white", 
+    fontSize: 16, 
+    fontFamily: "SpotifyCircular", 
+    backgroundColor: "transparent", 
+    height: "100%", 
+    flex: 1, 
     paddingHorizontal: 15,
+    borderWidth: 0, 
   },
-  glassContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "80%",
-    borderRadius: 20,
+  glassContainer: { 
+    flexDirection: "row", 
+    alignItems: "center", 
+    width: "80%", 
+    borderRadius: 20, 
+    marginBottom: 20, 
+    overflow: "hidden", 
+    backgroundColor: "rgba(255, 255, 255, 0.1)", 
+    height: 55, 
+    paddingHorizontal: 0 
+  },
+  glassContainerFocused: { backgroundColor: "rgba(30, 215, 96, 0.3)", borderWidth: 2, borderColor: "#1DB954" },
+
+  // ** Inline Field Styles (DOB/Gender) **
+  inlineFieldWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '80%',
     marginBottom: 20,
-    overflow: "hidden",
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    height: 55,
+  },
+  inlineLabel: { 
+    color: "white", 
+    fontSize: 16, 
+    fontFamily: "SpotifyCircular", 
+    marginRight: 10,
+    width: '20%', 
+    textAlign: 'left',
+  },
+  dobSectionInline: { 
+    flexDirection: "row", 
+    flex: 1, 
+    justifyContent: "space-between", 
+  },
+  // dobBoxInline is primarily used in component array.
+
+  dobInput: {
+    fontSize: 16,
+    textAlign: "center",
     paddingHorizontal: 0,
+    color: "white",
+    flex: 1, 
+    fontFamily: "SpotifyCircular",
+    backgroundColor: 'transparent', 
+    height: '100%', 
+    borderWidth: 0, 
+    paddingVertical: 0, 
   },
-  glassContainerFocused: {
-    backgroundColor: "rgba(30, 215, 96, 0.3)", // Spotify green highlight
-    borderWidth: 2,
-    borderColor: "#1DB954",
+  
+  // ** Gender Styles **
+  genderContainerInline: { 
+    flexDirection: "row", 
+    flex: 1, 
+    justifyContent: "space-between", 
   },
-dobSectionInline: {
-  flexDirection: "row",
-  alignItems: "center",
-  width: "70%",
-  marginBottom: 20,
-},
-
-dobLabelInline: {
-  color: "white",
-  fontSize: 16,
-  fontFamily: "SpotifyCircular",
-  marginRight: 110,
-  minWidth: 110, 
-},
-
-dobBoxInline: {
-  width: "22%",
-  borderRadius: 20,
-  height: 55,
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "rgba(255, 255, 255, 0.1)",
-  overflow: "hidden",
-  paddingHorizontal: 10,
-  marginRight: 10,
-},
-
-dobBoxLastInline: {
-  marginRight: 0,
-},
-
-  genderContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "80%",
-    marginBottom: 20,
-  },
-  genderButton: {
-    flex: 1,
-    paddingVertical: 12,
-    marginHorizontal: 5,
-    borderRadius: 20,
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-  },
+  genderButton: { flex: 1, paddingVertical: 12, marginHorizontal: 4, borderRadius: 20, alignItems: "center", backgroundColor: "rgba(255, 255, 255, 0.1)" },
   genderButtonSelected: { backgroundColor: "#1b9648ff" },
   genderText: { color: "#aaa", fontSize: 16, fontFamily: "SpotifyCircular" },
   genderTextSelected: { color: "white", fontWeight: "bold" },
-  signInButton: {
-    width: "80%",
-    padding: 15,
-    borderRadius: 30,
-    marginBottom: 20,
-    alignItems: "center",
-  },
-  signInText: {
-    color: "white",
-    fontSize: 18,
+  
+  // ** Button/Footer Styles **
+  errorText: {
+    color: '#FF4D4D', 
+    fontSize: 14,
     fontFamily: "SpotifyCircular",
+    alignSelf: 'center',
+    textAlign: 'center',
+    width: '80%', 
+    marginBottom: 5,
   },
+  signUpButtonWrapper: { 
+    width: "80%", 
+    borderRadius: 30, 
+    overflow: "hidden", 
+    marginBottom: 20,
+  },
+  signInButton: { width: "100%", padding: 15, borderRadius: 30, alignItems: "center", justifyContent: "center", alignSelf: "center" },
+  signInText: { color: "white", fontSize: 18, fontFamily: "SpotifyCircular" },
+  
+  // ** Socials **
   orText: {
-    color: "#22B14C",
+    color: "#1DB954", // Using Spotify Green for consistency
     marginBottom: 15,
     fontSize: 14,
     fontFamily: "SpotifyCircular",
@@ -377,14 +393,9 @@ dobBoxLastInline: {
     overflow: "hidden",
     backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
-  signinRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 30,
-  },
-  signin: {
-    color: "#1DB954",
-    fontSize: 16,
-    fontFamily: "SpotifyCircular",
-  },
+  
+  signinRow: { flexDirection: "row", alignItems: "center", marginBottom: 30 },
+  signin: { color: "#1DB954", fontSize: 16, fontFamily: "SpotifyCircular" },
+
+  // Removed/ignored conflicting styles: dobLabelInline, dobBoxInline, dobBoxLastInline, genderContainer, socialGlass (duplicates), forgot, usernameContainer, passwordContainer
 });
