@@ -63,7 +63,7 @@ export default function ProfileScreen({ user = {}, onEditProfile, onNavigate }) 
         <View style={styles.profileRow}>
           <View style={styles.profileIconWrapper}>
             <Image
-              source={require("C:/Users/Ren/Documents/Github/Spotify-App/Spotify-App-Mob-Dev/Spotify-App/assets/images/friend.jpg")}
+              source={require("../../assets/images/friend.jpg")}
               style={styles.profileIcon}
             />
           </View>

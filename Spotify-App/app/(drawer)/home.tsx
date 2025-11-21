@@ -18,54 +18,48 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 export default function HomeScreen() { 
-    // ... (rest of your state and constants) ...
     const navigation = useNavigation();
     const [query, setQuery] = useState("");
     const [selected, setSelected] = useState("All");
 
-    // --- Dynamic Constants DEFINED HERE ---
     const { width } = Dimensions.get("window");
-    const SONG_CARD_SIZE = width * 0.4;
+    const SONG_CARD_SIZE = 300;
     const ARTIST_CARD_SIZE = 100;
-    const ALBUM_CARD_SIZE = width * 0.6;
-    // -------------------------------------
+    const ALBUM_CARD_SIZE = 300;
 
-    // Fake data (rest of fake data omitted for brevity)
-    const TRENDING_SONGS = [
-        { id: "1", title: "Song One", artist: "Artist A", image: "https://i.scdn.co/image/ab67616d0000b273c0c2e5.jpg" },
-        { id: "2", title: "Song Two", artist: "Artist B", image: "https://i.scdn.co/image/ab67616d0000b27398b2d7.jpg" },
-    ];
-    const POPULAR_ARTISTS = [
-        { id: "1", name: "Artist A", image: "https://i.scdn.co/image/ab6761610000e5eb3efc6.jpg" },
-        { id: "2", name: "Artist B", image: "https://i.scdn.co/image/ab6761610000e5eb71234.jpg" },
-    ];
-    const ALBUMS = [
-        { id: "1", title: "Album One", image: "https://i.scdn.co/image/ab67616d0000b273abcdef.jpg" },
-        { id: "2", title: "Album Two", image: "https://i.scdn.co/image/ab67616d0000b273fedcba.jpg" },
-    ];
+const TRENDING_SONGS = [
+    { id: "1", title: "Song One", artist: "Artist A", image: require("../../assets/images/cover.jpg") },
+    { id: "2", title: "Song Two", artist: "Artist B", image: require("../../assets/images/cover.jpg") },
+];
 
-    // --- NEW FAKE DATA FOR REQUESTED SECTIONS ---
-    const RECENTLY_PLAYED = [
-        { id: "rp1", title: "Last Song 1", artist: "Artist C", image: "https://i.scdn.co/image/ab67616d0000b273d2a7b.jpg" },
-        { id: "rp2", title: "Last Song 2", artist: "Artist D", image: "https://i.scdn.co/image/ab67616d0000b2734f19c.jpg" },
-        { id: "rp3", title: "Last Song 3", artist: "Artist E", image: "https://i.scdn.co/image/ab67616d0000b2738a9d0.jpg" },
-    ];
+const POPULAR_ARTISTS = [
+    { id: "1", name: "Artist A", image: require("../../assets/images/cover.jpg") },
+    { id: "2", name: "Artist B", image: require("../../assets/images/cover.jpg") },
+];
 
-    const FAVORITE_ALBUM_DATA = [
-        { id: "fa1", title: "My Top Album", image: "https://i.scdn.co/image/ab67616d0000b2731c2d3e.jpg" },
-    ];
+const ALBUMS = [
+    { id: "1", title: "Playlist One", image: require("../../assets/images/cover.jpg") },
+    { id: "2", title: "Playlist Two", image: require("../../assets/images/cover.jpg") },
+];
 
-    const FAVORITE_SONGS = [
-        { id: "fs1", title: "Fav Song 1", artist: "Fav Artist X", image: "https://i.scdn.co/image/ab67616d0000b2735d4c2.jpg" },
-        { id: "fs2", title: "Fav Song 2", artist: "Fav Artist Y", image: "https://i.scdn.co/image/ab67616d0000b2736e5f3.jpg" },
-    ];
-    // ---------------------------------------------
+const RECENTLY_PLAYED = [
+    { id: "rp1", title: "Last Song 1", artist: "Artist C", image: require("../../assets/images/cover.jpg") },
+    { id: "rp2", title: "Last Song 2", artist: "Artist D", image: require("../../assets/images/cover.jpg") },
+    { id: "rp3", title: "Last Song 3", artist: "Artist E", image: require("../../assets/images/cover.jpg") },
+];
 
+const FAVORITE_ALBUM_DATA = [
+    { id: "fa1", title: "My Top Playlist", image: require("../../assets/images/cover.jpg") },
+];
 
-    // --- RENDER FUNCTIONS ---
+const FAVORITE_SONGS = [
+    { id: "fs1", title: "Fav Song 1", artist: "Fav Artist X", image: require("../../assets/images/cover.jpg") },
+    { id: "fs2", title: "Fav Song 2", artist: "Fav Artist Y", image: require("../../assets/images/cover.jpg") },
+];
+
     const renderSong = ({ item }) => (
         <View style={[styles.songCard, { width: SONG_CARD_SIZE }]}>
-            <Image source={{ uri: item.image }} style={[styles.songImage, { height: SONG_CARD_SIZE }]} />
+            <Image source={item.image} style={[styles.songImage, { height: SONG_CARD_SIZE }]} />
             <Text style={styles.songTitle} numberOfLines={1}>{item.title}</Text>
             <Text style={styles.songArtist} numberOfLines={1}>{item.artist}</Text>
         </View>
@@ -88,22 +82,23 @@ export default function HomeScreen() {
         </View>
     );
 
-    const renderAlbum = ({ item }) => (
-        <TouchableOpacity 
-            style={[styles.albumCard, { width: ALBUM_CARD_SIZE }]}
-            onPress={() => {
-                // Navigates to the PlaylistScreen, passing album data
-                navigation.navigate('PlaylistsScreen', { 
-                    playlistId: item.id, 
-                    playlistTitle: item.title 
-                });
-            }}
-        >
-            <Image source={{ uri: item.image }} style={[styles.albumImage, { height: ALBUM_CARD_SIZE }]} />
-            <Text style={styles.albumTitle} numberOfLines={1}>{item.title}</Text>
-        </TouchableOpacity>
-    );
-    // ------------------------
+const renderAlbum = ({ item }) => (
+    <TouchableOpacity 
+        style={[styles.albumCard, { width: ALBUM_CARD_SIZE }]}
+        onPress={() => {
+            router.push({
+                pathname: "/PlaylistsScreen",
+                params: {
+                    playlistId: item.id,
+                    playlistTitle: item.title,
+                },
+            });
+        }}
+    >
+        <Image source={item.image}  style={[styles.albumImage, { height: ALBUM_CARD_SIZE }]} />
+        <Text style={styles.albumTitle} numberOfLines={1}>{item.title}</Text>
+    </TouchableOpacity>
+);
 
 
     return (
@@ -151,7 +146,7 @@ export default function HomeScreen() {
                       style={styles.profileContainer}
                   >
                       <Image
-                          source={require("C:/Users/Ren/Documents/Github/Spotify-App/Spotify-App-Mob-Dev/Spotify-App/assets/images/friend.jpg")}
+                          source={require("../../assets/images/friend.jpg")}
                           style={styles.profileImage}
                       />
                   </TouchableOpacity>
@@ -188,8 +183,8 @@ export default function HomeScreen() {
                 {FAVORITE_ALBUM_DATA.length > 0 && (
                     <>
                         <View style={styles.sectionHeader}>
-                            <Text style={styles.sectionTitle}>Your Favorite Album</Text>
-                            <TouchableOpacity><Text style={styles.showAll}>View Album</Text></TouchableOpacity>
+                            <Text style={styles.sectionTitle}>Your Favorite Playlist</Text>
+                            <TouchableOpacity><Text style={styles.showAll}>Show All</Text></TouchableOpacity>
                         </View>
                         <View style={{ paddingLeft: 16, marginBottom: 20 }}>
                             {renderAlbum({ item: FAVORITE_ALBUM_DATA[0] })}
@@ -242,7 +237,7 @@ export default function HomeScreen() {
 
                 {/* Albums */}
                 <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionTitle}>Popular albums</Text>
+                    <Text style={styles.sectionTitle}>Popular Playlists</Text>
                     <TouchableOpacity><Text style={styles.showAll}>Show all</Text></TouchableOpacity>
                 </View>
                 <FlatList
@@ -259,41 +254,47 @@ export default function HomeScreen() {
 }
 
 
-// --- STATIC STYLESHEET ---
+// --- STYLESHEET FIXED ---
 const styles = StyleSheet.create({
     safe: { flex: 1, backgroundColor: "#121212" },
+
     header: {
         flexDirection: "row",
         alignItems: "center",
-        padding: 16,
-        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingVertical: 18,
+        justifyContent: "space-between",
+        marginBottom: 10,
     },
 
     circleButton: {
-        width: 60,
-        height: 60,
+        width: 55,
+        height: 55,
         borderRadius: 30,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#202020",
+        marginRight: 10,
     },
 
     cylinderRow: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 10,
+        gap: 12,
         marginLeft: 10,
+        marginTop: 10,
+        marginBottom: 10,
     },
 
     cylinderButton: {
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 20,
+        paddingHorizontal: 18,
+        paddingVertical: 10,
+        borderRadius: 25,
         backgroundColor: "#202020",
     },
 
     cylinderButtonActive: {
-        backgroundColor: "#1DB954", // Spotify green highlight
+        backgroundColor: "#1DB954",
     },
 
     cylinderText: {
@@ -303,67 +304,124 @@ const styles = StyleSheet.create({
     },
 
     cylinderTextActive: {
-        color: "#000", // switch to black when highlighted
+        color: "#000",
     },
-    profileContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    overflow: "hidden",
-    backgroundColor: "#202020",
-    justifyContent: "center",
-    alignItems: "center",
-},
 
-profileImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-},
+    profileContainer: {
+        width: 55,
+        height: 55,
+        borderRadius: 27,
+        overflow: "hidden",
+        backgroundColor: "#202020",
+        justifyContent: "center",
+        alignItems: "center",
+        marginLeft: 10,
+    },
+
+    profileImage: {
+        width: "100%",
+        height: "100%",
+        resizeMode: "cover",
+    },
 
     searchRow: {
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#202020",
-        margin: 20,
-        paddingHorizontal: 12,
-        borderRadius: 8,
-        height: 44,
+        marginHorizontal: 20,
+        marginTop: 10,
+        paddingHorizontal: 14,
+        borderRadius: 10,
+        height: 46,
     },
-    searchInput: { marginLeft: 8, color: "#fff", flex: 1 },
-    
+
+    searchInput: { marginLeft: 10, color: "#fff", flex: 1 },
+
     sectionHeader: {
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingHorizontal: 16,
-        marginTop: 20,
-        marginBottom: 12,
+        paddingHorizontal: 20,
+        marginTop: 30,
+        marginBottom: 14,
     },
-    sectionTitle: { color: "#fff", fontSize: 18, fontWeight: "700" },
+
+    sectionTitle: { color: "#fff", fontSize: 20, fontWeight: "700" },
+
     showAll: { color: "#b3b3b3", fontSize: 13 },
+
     headerTitle: {
-    color: "#fff",
-    fontSize: 22,
-    fontWeight: "bold",
-    textAlign: "center",
-    flex: 0.1,
-  },
-
-    songCard: { marginRight: 14 },
-    songImage: { borderRadius: 6 },
-    songTitle: { color: "#fff", marginTop: 6, fontWeight: "500" },
-    songArtist: { color: "#b3b3b3", fontSize: 12 },
-
-    artistCard: { marginRight: 16, alignItems: "center" },
-    artistImage: { marginBottom: 6 },
-    artistName: { color: "#fff", fontSize: 13, textAlign: "center" },
-
-    albumCard: { marginRight: 16 },
-    albumImage: { borderRadius: 8 },
-    albumTitle: {
         color: "#fff",
-        marginTop: 6,
+        fontSize: 24,
+        fontWeight: "bold",
+        textAlign: "center",
+        flex: 0.06,
+    },
+
+    // --- SONG CARDS ---
+    songCard: {
+        width: 300,
+        marginRight: 22,
+        marginLeft: 6,
+    },
+
+    songImage: {
+        width: 300,
+        height: 300,
+        borderRadius: 8,
+    },
+
+    songTitle: {
+        color: "#fff",
+        marginTop: 8,
         fontWeight: "600",
         fontSize: 14,
+    },
+
+    songArtist: {
+        color: "#b3b3b3",
+        fontSize: 12,
+        marginTop: 2,
+    },
+
+    // --- ARTIST CARDS ---
+    artistCard: {
+        marginRight: 22,
+        marginLeft: 4,
+        alignItems: "center",
+    },
+
+    artistImage: {
+        marginBottom: 8,
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+    },
+
+    artistName: {
+        color: "#fff",
+        fontSize: 14,
+        textAlign: "center",
+        marginTop: 2,
+    },
+
+    // --- ALBUM CARDS ---
+    albumCard: {
+        width: 300,
+        marginRight: 25,
+        marginLeft: 6,
+        marginBottom: 25,
+    },
+
+    albumImage: {
+        width: 300,
+        height: 300,
+        borderRadius: 12,
+    },
+
+    albumTitle: {
+        color: "#fff",
+        marginTop: 8,
+        fontWeight: "700",
+        fontSize: 15,
     },
 });

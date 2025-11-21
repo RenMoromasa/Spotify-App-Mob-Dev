@@ -1,12 +1,45 @@
 // app/(drawer)/_layout.tsx
 import { Drawer } from "expo-router/drawer";
+import { Slot } from "expo-router";
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useFonts } from "expo-font";
+import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
+import SignUpScreen from "../(tabs)/SpotifySignup";
 
-// Custom Drawer Content
+const Stack = createStackNavigator();
+
+function SignUpStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+        name="SignUp"
+        component={SignUpScreen}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid,
+          transitionSpec: {
+            open: { animation: "timing", config: { duration: 200 } },
+            close: { animation: "timing", config: { duration: 200 } },
+          },
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+export default function DrawerRoot() {
+  const [fontsLoaded] = useFonts({
+    SpotifyCircular: require("../../assets/fonts/CircularStd-Bold.ttf"),
+  });
+
+  if (!fontsLoaded) return null;
+
+  return <DrawerLayout />;
+}
+
 function CustomDrawerContent(props: any) {
   return (
     <View style={styles.drawerContainer}>
@@ -15,7 +48,6 @@ function CustomDrawerContent(props: any) {
           <Text style={styles.drawerHeaderText}>Menu</Text>
         </View>
 
-        {/* Home */}
         <TouchableOpacity
           style={styles.drawerItem}
           onPress={() => {
@@ -23,35 +55,32 @@ function CustomDrawerContent(props: any) {
             router.push("/(drawer)/home");
           }}
         >
-          <Ionicons name="home-outline" size={24} color="#fff" style={styles.drawerIcon} />
+          <Ionicons name="home-outline" size={24} color="#fff" />
           <Text style={styles.drawerItemText}>Home</Text>
         </TouchableOpacity>
 
-        {/* What's New */}
         <TouchableOpacity
           style={styles.drawerItem}
           onPress={() => {
             props.navigation.closeDrawer();
-            router.push("/(drawer)/whats-new");
+            // router.push("/(drawer)/whats-new");
           }}
         >
-          <Ionicons name="flame-outline" size={24} color="#fff" style={styles.drawerIcon} />
+          <Ionicons name="flame-outline" size={24} color="#fff" />
           <Text style={styles.drawerItemText}>What's New</Text>
         </TouchableOpacity>
 
-        {/* Recents */}
         <TouchableOpacity
           style={styles.drawerItem}
           onPress={() => {
             props.navigation.closeDrawer();
-            router.push("/(drawer)/recents");
+            // router.push("/(drawer)/recents");
           }}
         >
-          <Ionicons name="time-outline" size={24} color="#fff" style={styles.drawerIcon} />
+          <Ionicons name="time-outline" size={24} color="#fff" />
           <Text style={styles.drawerItemText}>Recents</Text>
         </TouchableOpacity>
 
-        {/* Settings & Privacy */}
         <TouchableOpacity
           style={styles.drawerItem}
           onPress={() => {
@@ -59,7 +88,7 @@ function CustomDrawerContent(props: any) {
             router.push("/(drawer)/SettingsScreen");
           }}
         >
-          <Ionicons name="settings-outline" size={24} color="#fff" style={styles.drawerIcon} />
+          <Ionicons name="settings-outline" size={24} color="#fff" />
           <Text style={styles.drawerItemText}>Settings & Privacy</Text>
         </TouchableOpacity>
       </DrawerContentScrollView>
@@ -67,7 +96,10 @@ function CustomDrawerContent(props: any) {
   );
 }
 
-export default function DrawerLayout() {
+// ------------------------
+// Drawer Layout
+// ------------------------
+function DrawerLayout() {
   return (
     <Drawer
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -79,9 +111,9 @@ export default function DrawerLayout() {
           backgroundColor: "#121212",
           width: 260,
         },
-        drawerLabelStyle: { 
-          color: "#fff", 
-          fontFamily: "CircularStd", // 🔥 font change here
+        drawerLabelStyle: {
+          color: "#fff",
+          fontFamily: "SpotifyCircular",
         },
       }}
     >
@@ -93,6 +125,9 @@ export default function DrawerLayout() {
   );
 }
 
+// ------------------------
+// STYLES
+// ------------------------
 const styles = StyleSheet.create({
   drawerContainer: {
     flex: 1,
@@ -111,8 +146,7 @@ const styles = StyleSheet.create({
   drawerHeaderText: {
     color: "#fff",
     fontSize: 24,
-    fontWeight: "bold",
-    fontFamily: "CircularStd", // 🔥 use Circular Std here too
+    fontFamily: "SpotifyCircular",
   },
   drawerItem: {
     flexDirection: "row",
@@ -121,13 +155,10 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     marginVertical: 2,
   },
-  drawerIcon: {
-    marginRight: 15,
-    width: 24,
-  },
   drawerItemText: {
     color: "#fff",
     fontSize: 16,
-    fontFamily: "CircularStd", // 🔥 changed
+    fontFamily: "SpotifyCircular",
+    marginLeft: 10,
   },
 });

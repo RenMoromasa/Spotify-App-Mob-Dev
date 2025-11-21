@@ -7,16 +7,19 @@ import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { NavigationContainer } from "@react-navigation/native";
+import AuthStack from "./StackNavigator";
+
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
+    
     <Tabs
       screenOptions={{
         headerShown: false,
 
-        // 👇 Completely hide bottom tab bar
         tabBarStyle: { display: 'none' }, 
 
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
