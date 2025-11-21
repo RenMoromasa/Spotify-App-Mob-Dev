@@ -203,7 +203,7 @@ export default function SpotifyLogin() {
           <View style={styles.signupRow}>
             {/* 🚨 Navigation fixed to use router.push and correct path */}
             <Text style={{ color: "#aaa" }}>Don’t have an account? </Text>
-            <TouchableOpacity onPress={() => router.push("/(auth)/signup")}>
+            <TouchableOpacity onPress={() => router.push("/(tabs)/SpotifySignup")}>
               <Text style={styles.signup}>Sign Up</Text>
             </TouchableOpacity>
           </View>

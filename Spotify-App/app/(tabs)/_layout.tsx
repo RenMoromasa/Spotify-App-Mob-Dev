@@ -14,44 +14,35 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
+
+        // 👇 Completely hide bottom tab bar
+        tabBarStyle: { display: 'none' }, 
+
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="home" size={28} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="paper-plane" size={28} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="component-showcase"
-        options={{
-          title: 'Component Showcase',
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="person" size={28} color={color} />
-          ),
-        }}
-      />
+      }}
+    >
+
+      {/* HOME */}
+      <Tabs.Screen name="index" options={{ title: 'Home' }} />
+
+      {/* EXPLORE */}
+      <Tabs.Screen name="explore" options={{ title: 'Explore' }} />
+
+      {/* PROFILE */}
+      <Tabs.Screen name="ProfileScreen" options={{ title: 'Profile' }} />
+
+      {/* Hidden Extra Screens */}
+      <Tabs.Screen name="PlaylistsScreen" options={{ href: null }} />
+      <Tabs.Screen name="SettingsScreen" options={{ href: null }} />
+      <Tabs.Screen name="SpotifyLogin" options={{ href: null }} />
+      <Tabs.Screen name="SpotifySignup" options={{ href: null }} />
+
+      {/* Optional Showcase */}
+      <Tabs.Screen name="component-showcase" options={{ href: null }} />
+
     </Tabs>
   );
 }

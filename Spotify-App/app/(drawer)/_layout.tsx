@@ -6,7 +6,7 @@ import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
-// Custom Right Drawer Content
+// Custom Drawer Content
 function CustomDrawerContent(props: any) {
   return (
     <View style={styles.drawerContainer}>
@@ -14,27 +14,53 @@ function CustomDrawerContent(props: any) {
         <View style={styles.drawerHeader}>
           <Text style={styles.drawerHeaderText}>Menu</Text>
         </View>
-        
+
+        {/* Home */}
         <TouchableOpacity
           style={styles.drawerItem}
           onPress={() => {
             props.navigation.closeDrawer();
-            router.push("/(drawer)/profile");
+            router.push("/(drawer)/home");
           }}
         >
-          <Ionicons name="person-outline" size={24} color="#fff" style={styles.drawerIcon} />
-          <Text style={styles.drawerItemText}>My Profile</Text>
+          <Ionicons name="home-outline" size={24} color="#fff" style={styles.drawerIcon} />
+          <Text style={styles.drawerItemText}>Home</Text>
         </TouchableOpacity>
 
+        {/* What's New */}
         <TouchableOpacity
           style={styles.drawerItem}
           onPress={() => {
             props.navigation.closeDrawer();
-            router.push("/(drawer)/settings");
+            router.push("/(drawer)/whats-new");
+          }}
+        >
+          <Ionicons name="flame-outline" size={24} color="#fff" style={styles.drawerIcon} />
+          <Text style={styles.drawerItemText}>What's New</Text>
+        </TouchableOpacity>
+
+        {/* Recents */}
+        <TouchableOpacity
+          style={styles.drawerItem}
+          onPress={() => {
+            props.navigation.closeDrawer();
+            router.push("/(drawer)/recents");
+          }}
+        >
+          <Ionicons name="time-outline" size={24} color="#fff" style={styles.drawerIcon} />
+          <Text style={styles.drawerItemText}>Recents</Text>
+        </TouchableOpacity>
+
+        {/* Settings & Privacy */}
+        <TouchableOpacity
+          style={styles.drawerItem}
+          onPress={() => {
+            props.navigation.closeDrawer();
+            router.push("/(drawer)/SettingsScreen");
           }}
         >
           <Ionicons name="settings-outline" size={24} color="#fff" style={styles.drawerIcon} />
-          <Text style={styles.drawerItemText}>Settings</Text>
+          <Text style={styles.drawerItemText}>Settings & Privacy</Text>
         </TouchableOpacity>
       </DrawerContentScrollView>
     </View>
@@ -44,20 +70,25 @@ function CustomDrawerContent(props: any) {
 export default function DrawerLayout() {
   return (
     <Drawer
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
         drawerPosition: "left",
         drawerType: "front",
         drawerStyle: {
           backgroundColor: "#121212",
-          width: 240,
+          width: 260,
         },
-        drawerLabelStyle: { color: "#fff" },
+        drawerLabelStyle: { 
+          color: "#fff", 
+          fontFamily: "CircularStd", // 🔥 font change here
+        },
       }}
     >
       <Drawer.Screen name="home" options={{ title: "Home" }} />
-      <Drawer.Screen name="profile" options={{ title: "Profile" }} />
-      <Drawer.Screen name="settings" options={{ title: "Settings" }} />
+      <Drawer.Screen name="whats-new" options={{ title: "What's New" }} />
+      <Drawer.Screen name="recents" options={{ title: "Recents" }} />
+      <Drawer.Screen name="settings" options={{ title: "Settings & Privacy" }} />
     </Drawer>
   );
 }
@@ -81,7 +112,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 24,
     fontWeight: "bold",
-    fontFamily: "SpotifyCircular",
+    fontFamily: "CircularStd", // 🔥 use Circular Std here too
   },
   drawerItem: {
     flexDirection: "row",
@@ -97,6 +128,6 @@ const styles = StyleSheet.create({
   drawerItemText: {
     color: "#fff",
     fontSize: 16,
-    fontFamily: "SpotifyCircular",
+    fontFamily: "CircularStd", // 🔥 changed
   },
 });

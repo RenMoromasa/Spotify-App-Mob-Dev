@@ -14,12 +14,12 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from "@react-navigation/native"; // <-- ADDED IMPORT
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get('window');
-const CARD_SIZE = width * 0.4; // Corrected to use 0.4 for song card width
-const ARTIST_SIZE = 100; // Assuming this size
-const ALBUM_SIZE = width * 0.6; // Corrected to use 0.6 for album card width
+const CARD_SIZE = width * 0.4;
+const ARTIST_SIZE = 100;
+const ALBUM_SIZE = width * 0.6;
 
 
 const TRENDING_SONGS = [
@@ -81,7 +81,7 @@ export default function SpotifyHome() {
   );
 
   const renderAlbum = ({ item }) => (
-    <TouchableOpacity // <-- CHANGED TO TouchableOpacity
+    <TouchableOpacity
       style={[styles.albumCard, { width: ALBUM_SIZE }]} // Ensure dynamic size is used
       onPress={() => {
         console.log(`Tapped album: ${item.title}`);

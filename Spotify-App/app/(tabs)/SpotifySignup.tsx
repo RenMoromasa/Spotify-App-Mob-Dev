@@ -71,7 +71,7 @@ export default function SpotifySignup() {
     try {
         await new Promise(resolve => setTimeout(resolve, 1500));
         // If successful, navigate to the main app (drawer home)
-        router.push("/(drawer)/home"); 
+        router.push("/(tabs)/SpotifyLogin"); 
         
     } catch (apiError) {
         setError("Sign up failed. Please try again later.");
@@ -268,7 +268,7 @@ export default function SpotifySignup() {
           <View style={styles.signinRow}>
             <Text style={{ color: "#aaa" }}>Already have an account? </Text>
             {/* 🚨 Navigation fixed to use router.push and correct path */}
-            <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
+            <TouchableOpacity onPress={() => router.push("/(tabs)/SpotifyLogin")}>
               <Text style={styles.signin}>Sign In</Text>
             </TouchableOpacity>
           </View>
@@ -374,9 +374,8 @@ const styles = StyleSheet.create({
   signInButton: { width: "100%", padding: 15, borderRadius: 30, alignItems: "center", justifyContent: "center", alignSelf: "center" },
   signInText: { color: "white", fontSize: 18, fontFamily: "SpotifyCircular" },
   
-  // ** Socials **
   orText: {
-    color: "#1DB954", // Using Spotify Green for consistency
+    color: "#1DB954",
     marginBottom: 15,
     fontSize: 14,
     fontFamily: "SpotifyCircular",
@@ -397,5 +396,4 @@ const styles = StyleSheet.create({
   signinRow: { flexDirection: "row", alignItems: "center", marginBottom: 30 },
   signin: { color: "#1DB954", fontSize: 16, fontFamily: "SpotifyCircular" },
 
-  // Removed/ignored conflicting styles: dobLabelInline, dobBoxInline, dobBoxLastInline, genderContainer, socialGlass (duplicates), forgot, usernameContainer, passwordContainer
 });
